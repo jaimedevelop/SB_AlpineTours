@@ -53,3 +53,5 @@ const HotelSearch: React.FC<HotelSearchProps> = ({ resortLatitude, resortLongitu
 		</div>
 	);
 };
+
+export default HotelSearch;
