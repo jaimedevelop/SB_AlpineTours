@@ -1,5 +1,4 @@
 import React from 'react';
-import { }
 import { Snowflake, Mountain, Trees, Bike, Baby, Trophy, Sparkles } from 'lucide-react';
 
 const interests = [
