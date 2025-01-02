@@ -1,7 +1,7 @@
 import { MapPin, MoreHorizontal } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Moon, Mountain, Skateboard, Snowflake, Bike } from 'lucide-react';
+import { Moon, Mountain, Snowflake, Bike } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
 import type { Resort } from "@/types/resort";
