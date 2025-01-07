@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ResortCard } from './resort-card';
-import { getResorts } from '../services/firebase';
+import { database } from '../lib/firebase';
+import { ref, onValue } from 'firebase/database';
 import type { Resort } from '../types/resort';
 
 export function ResortGrid() {
@@ -10,8 +11,19 @@ export function ResortGrid() {
 
   useEffect(() => {
     try {
-      const unsubscribe = getResorts((data) => {
-        setResorts(data);
+      const resortsRef = ref(database, 'resorts');
+      const unsubscribe = onValue(resortsRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          // Transform the data to include the Firebase key as id
+          const resortsArray = Object.entries(data).map(([key, value]) => ({
+            id: key,
+            ...(value as Omit<Resort, 'id'>)
+          }));
+          setResorts(resortsArray);
+        } else {
+          setResorts([]);
+        }
         setLoading(false);
       });
 
@@ -26,7 +38,7 @@ export function ResortGrid() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-64 bg-white/10 rounded-lg" />
+          <div key={`skeleton-${i}`} className="h-64 bg-white/10 rounded-lg" />
         ))}
       </div>
     );
