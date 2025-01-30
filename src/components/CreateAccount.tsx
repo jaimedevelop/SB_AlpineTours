@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Calendar, ArrowLeft, AlertCircle } from 'lucide-react';
-import { createUser } from '../lib/db';
-import { useAuth } from '../context/AuthContext';
+import { signUp } from '../firebase/auth';
+import { updateUserProfile } from '../firebase/database';
 
 export default function CreateAccount() {
   const navigate = useNavigate();
-  const { setAuth } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,23 +16,32 @@ export default function CreateAccount() {
   const [isLoading, setIsLoading] = useState(false);
 
   const selectedResort = sessionStorage.getItem('selectedResort')
-    ? JSON.parse(sessionStorage.getItem('selectedResort')!)
+    ? JSON.parse(sessionStorage.getItem('selectedResort'))
     : null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-      const { user, token } = await createUser(
-        formData.name.trim(),
+      // Create user with Firebase Authentication
+      const user = await signUp(
         formData.email.trim().toLowerCase(),
         formData.password,
-        formData.age ? parseInt(formData.age, 10) : undefined
+        formData.name.trim()
       );
-      
-      setAuth(user, token);
+
+      // Add additional user data to Realtime Database
+      await updateUserProfile(user.uid, {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        age: formData.age ? parseInt(formData.age, 10) : null,
+        selectedResort: selectedResort ? selectedResort.id : null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+
       navigate('/dashboard');
     } catch (err) {
       console.error('Account creation error:', err);
@@ -43,7 +51,7 @@ export default function CreateAccount() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,

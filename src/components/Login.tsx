@@ -1,30 +1,50 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowLeft, AlertCircle } from 'lucide-react';
-import { loginUser } from '../lib/db';
-import { useAuth } from '../context/AuthContext';
+import { signIn } from '../firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithCredential, OAuthProvider } from 'firebase/auth';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { setAuth } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-      const { user, token } = await loginUser(email, password);
-      setAuth(user, token);
+      const user = await signIn(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'An error occurred during login');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error signing in with Google');
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      const auth = getAuth();
+      const provider = new OAuthProvider('apple.com');
+      const result = await signInWithPopup(auth, provider);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error signing in with Apple');
     }
   };
 
@@ -95,7 +115,7 @@ export default function Login() {
           <div className="space-y-3">
             <button
               type="button"
-              onClick={() => {/* Add Google login logic */}}
+              onClick={handleGoogleSignIn}
               className="w-full bg-white text-gray-900 rounded-lg py-3 font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -121,7 +141,7 @@ export default function Login() {
 
             <button
               type="button"
-              onClick={() => {/* Add Apple login logic */}}
+              onClick={handleAppleSignIn}
               className="w-full bg-black text-white rounded-lg py-3 font-semibold hover:bg-gray-900 transition-colors flex items-center justify-center space-x-2"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
