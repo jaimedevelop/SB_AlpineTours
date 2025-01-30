@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Moon, Mountain, Snowflake, Bike } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
-import type { Resort } from "@/types/resort";
+import type { Resort } from "@/types/types";
 
 interface ResortCardProps {
   resort: Resort;

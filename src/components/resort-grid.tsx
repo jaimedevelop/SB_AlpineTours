@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ResortCard } from './resort-card';
 import { database } from '../lib/firebase';
 import { ref, onValue } from 'firebase/database';
-import type { Resort } from '../types/resort';
+import type { Resort } from '../types/types';
 
 export function ResortGrid() {
   const [resorts, setResorts] = useState<Resort[]>([]);

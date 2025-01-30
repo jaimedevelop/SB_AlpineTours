@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '../config/firebase';
-import { Resort } from '../types/resort';
+import { Resort } from '../types/types';
 
 export function useResorts() {
   const [resorts, setResorts] = useState<Resort[]>([]);

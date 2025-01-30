@@ -1,6 +1,6 @@
 import { ref, onValue, DataSnapshot } from 'firebase/database';
 import { db } from '../lib/firebase';
-import type { Resort } from '../types/resort';
+import type { Resort } from '../types/types';
 
 export const getResorts = (callback: (resorts: Resort[]) => void) => {
   const resortsRef = ref(db, '/');

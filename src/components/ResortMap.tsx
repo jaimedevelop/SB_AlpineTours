@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import { MapPin } from 'lucide-react';
-import { Resort } from '../types/resort';
+import { Resort } from '../types/types';
 import { ResortInfoWindow } from './ResortInfoWindow';
 import { useResorts } from '../hooks/useResorts';
 

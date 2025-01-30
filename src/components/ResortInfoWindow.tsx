@@ -1,4 +1,4 @@
-import { Resort } from '../types/resort';
+import { Resort } from '../types/types';
 
 interface ResortInfoWindowProps {
   resort: Resort;

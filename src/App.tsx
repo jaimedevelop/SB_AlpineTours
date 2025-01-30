@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Welcome from './components/Welcome';
 import Quiz from './components/Quiz';
 import LoadingScreen from './components/LoadingScreen';
-import Results from './components/Results';
+import SkiMap from './components/SkiMap';
 import ResortList from './components/ResortList';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
@@ -54,7 +54,7 @@ function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <Results />
+              <SkiMap />
             </motion.div>
           } />
           <Route path="/resorts" element={

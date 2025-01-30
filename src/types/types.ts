@@ -14,9 +14,9 @@ export interface Resort {
   latitude: string;
   longitude: string;
   description: string;
-  backcountry: boolean;
-  snowmobile: boolean;
-  snowTubing: boolean;
-  iceSkating: boolean;
-  nightSkiing: boolean;
+  backcountry: boolean | null;
+  snowmobile: boolean | null;
+  snowTubing: boolean | null;
+  iceSkating: boolean | null;
+  nightSkiing: boolean | null;
 }
