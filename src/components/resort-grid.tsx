@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ResortCard } from './resort-card';
-import { database } from '../lib/firebase';
+import { database } from '../firebase/config';
 import { ref, onValue } from 'firebase/database';
 import type { Resort } from '../types/types';
 
@@ -10,28 +10,39 @@ export function ResortGrid() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const resortsRef = ref(database, 'resorts');
-      const unsubscribe = onValue(resortsRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          // Transform the data to include the Firebase key as id
-          const resortsArray = Object.entries(data).map(([key, value]) => ({
-            id: key,
-            ...(value as Omit<Resort, 'id'>)
-          }));
-          setResorts(resortsArray);
-        } else {
-          setResorts([]);
-        }
-        setLoading(false);
-      });
+    const fetchResorts = () => {
+      try {
+        const resortsRef = ref(database, 'resorts');
+        
+        const unsubscribe = onValue(resortsRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            // Transform the data to include the Firebase key as id
+            const resortsArray = Object.entries(data).map(([key, value]) => ({
+              id: key,
+              ...(value as Omit<Resort, 'id'>)
+            }));
+            setResorts(resortsArray);
+          } else {
+            setResorts([]);
+          }
+          setLoading(false);
+        }, (error) => {
+          console.error('Error fetching resorts:', error);
+          setError('Error loading resorts');
+          setLoading(false);
+        });
 
-      return () => unsubscribe();
-    } catch (err) {
-      setError('Error loading resorts');
-      setLoading(false);
-    }
+        return () => unsubscribe();
+      } catch (err) {
+        console.error('Error setting up resorts listener:', err);
+        setError('Error loading resorts');
+        setLoading(false);
+        return () => {}; // Return empty cleanup function in case of error
+      }
+    };
+
+    return fetchResorts();
   }, []);
 
   if (loading) {
