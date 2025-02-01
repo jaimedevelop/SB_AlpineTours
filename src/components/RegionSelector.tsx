@@ -5,25 +5,25 @@ const regions = [
   {
     id: 'western',
     name: 'Western',
-    image: 'https://images.unsplash.com/photo-1551524164-687a55dd1126?auto=format&fit=crop&q=80&w=800',
+    image: '/src/assets/images/Mammoth Mountain.jpg',
     description: 'Pacific Coast mountains with deep powder',
   },
   {
     id: 'central',
     name: 'Central',
-    image: 'https://images.unsplash.com/photo-1605540436563-5bca919ae766?auto=format&fit=crop&q=80&w=800',
+    image: '/src/assets/images/Boyne Mountain.jpg',
     description: 'Midwest slopes perfect for learning',
   },
   {
     id: 'rocky',
     name: 'Rocky',
-    image: 'https://images.unsplash.com/photo-1467533003447-e295ff1b0435?auto=format&fit=crop&q=80&w=800',
+    image: '/src/assets/images/Steamboat.jpg',
     description: 'High altitude peaks with varied terrain',
   },
   {
     id: 'eastern',
     name: 'Eastern',
-    image: 'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&q=80&w=800',
+    image: '/src/assets/images/Killington.jpeg',
     description: 'Classic New England skiing experience',
   },
 ];
