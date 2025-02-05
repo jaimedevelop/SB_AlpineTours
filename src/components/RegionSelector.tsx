@@ -5,25 +5,25 @@ const regions = [
   {
     id: 'western',
     name: 'Western',
-    image: '/src/assets/images/Mammoth Mountain.jpg',
+    image: '/resortImages/Mammoth Mountain.jpg',
     description: 'Pacific Coast mountains with deep powder',
   },
   {
     id: 'central',
     name: 'Central',
-    image: '/src/assets/images/Boyne Mountain.jpg',
+    image: '/resortImages/Boyne Mountain.jpg',
     description: 'Midwest slopes perfect for learning',
   },
   {
     id: 'rocky',
     name: 'Rocky',
-    image: '/src/assets/images/Steamboat.jpg',
+    image: '/resortImages/Steamboat.jpg',
     description: 'High altitude peaks with varied terrain',
   },
   {
     id: 'eastern',
     name: 'Eastern',
-    image: '/src/assets/images/Killington.jpeg',
+    image: '/resortImages/Killington.jpeg',
     description: 'Classic New England skiing experience',
   },
 ];
