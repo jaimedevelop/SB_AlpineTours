@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Welcome from './components/Welcome';
-import Quiz from './components/Quiz';
+import Quiz from './components/ExperiencedQuiz';
 import LoadingScreen from './components/LoadingScreen';
 import SkiMap from './components/SkiMap';
 import ResortList from './components/ResortList';
