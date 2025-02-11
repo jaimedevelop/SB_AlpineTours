@@ -7,14 +7,14 @@ const quizOptions = [
     id: 'beginner',
     title: 'Beginner',
     subtitle: 'Perfect for first-time travelers',
-    image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=1920',
+    image: '/images/skiBeginner',
     icon: Compass
   },
   {
     id: 'experienced',
     title: 'Experienced',
     subtitle: 'For seasoned adventurers',
-    image: 'https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?auto=format&fit=crop&q=80&w=1920',
+    image: '/images/skiExperienced',
     icon: Brain
   }
 ];
