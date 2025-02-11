@@ -1,30 +1,45 @@
 import React from 'react';
-import { DivideIcon as LucideIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Compass, Brain } from 'lucide-react';
 
-interface QuizOption {
-  id: string;
-  title: string;
-  subtitle: string;
-  image: string;
-  icon: LucideIcon;
-}
+const quizOptions = [
+  {
+    id: 'beginner',
+    title: 'Beginner',
+    subtitle: 'Perfect for first-time travelers',
+    image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=1920',
+    icon: Compass
+  },
+  {
+    id: 'experienced',
+    title: 'Experienced',
+    subtitle: 'For seasoned adventurers',
+    image: 'https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?auto=format&fit=crop&q=80&w=1920',
+    icon: Brain
+  }
+];
 
-interface QuizSelectorProps {
-  options: QuizOption[];
-  onSelect: (id: string) => void;
-}
+export default function QuizSelector() {
+  const navigate = useNavigate();
 
-export default function QuizSelector({ options, onSelect }: QuizSelectorProps) {
+  const handleQuizSelection = (id: string) => {
+    if (id === 'beginner') {
+      navigate('/quiz/beginner');
+    } else {
+      navigate('/quiz/experienced');
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold text-center text-gray-900 mb-2">Travel Quiz</h1>
-      <p className="text-center text-gray-600 mb-12">Choose your experience level to get started</p>
+      <h1 className="text-4xl font-bold text-center text-white mb-2">Travel Quiz</h1>
+      <p className="text-center text-gray-200 mb-12">Choose your experience level to get started</p>
       
       <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-        {options.map((option) => (
+        {quizOptions.map((option) => (
           <button
             key={option.id}
-            onClick={() => onSelect(option.id)}
+            onClick={() => handleQuizSelection(option.id)}
             className="group relative overflow-hidden rounded-2xl aspect-[4/3] transition-transform hover:scale-[1.02]"
           >
             <img

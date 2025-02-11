@@ -3,6 +3,8 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Welcome from './components/Welcome';
 import QuizSelector from './components/QuizSelector';
+import BeginnerQuiz from './components/BeginnerQuiz';
+import ExperiencedQuiz from './components/ExperiencedQuiz';
 import LoadingScreen from './components/LoadingScreen';
 import SkiMap from './components/SkiMap';
 import ResortList from './components/ResortList';
@@ -35,6 +37,26 @@ function App() {
               transition={{ duration: 0.3 }}
             >
               <QuizSelector />
+            </motion.div>
+          } />
+          <Route path="/quiz/beginner" element={
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <BeginnerQuiz />
+            </motion.div>
+          } />
+          <Route path="/quiz/experienced" element={
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ExperiencedQuiz />
             </motion.div>
           } />
           <Route path="/loading" element={
