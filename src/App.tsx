@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Welcome from './components/Welcome';
-import Quiz from './components/ExperiencedQuiz';
+import QuizSelector from './components/QuizSelector';
 import LoadingScreen from './components/LoadingScreen';
 import SkiMap from './components/SkiMap';
 import ResortList from './components/ResortList';
@@ -34,7 +34,7 @@ function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <Quiz />
+              <QuizSelector />
             </motion.div>
           } />
           <Route path="/loading" element={

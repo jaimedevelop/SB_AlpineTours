@@ -6,7 +6,7 @@ import SkillSelector from './SkillSelector';
 import BudgetSelector from './BudgetSelector';
 import InterestSelector from './InterestSelector';
 
-export default function Quiz() {
+export default function ExperiencedQuiz() {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
