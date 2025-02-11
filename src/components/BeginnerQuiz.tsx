@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface QuizStep {
   currentStep: number;
   totalSteps: number;
 }
 
-export default function BeginnerQuiz({ onReset }: { onReset: () => void }) {
+export default function BeginnerQuiz() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     address: '',
@@ -206,7 +208,7 @@ const renderCostStep = () => (
         
         <div className="flex justify-between mt-8 pt-6 border-t">
           <button
-            onClick={step === 1 ? onReset : () => setStep(step - 1)}
+            onClick={step === 1 ? () => navigate('/quiz') : () => setStep(step - 1)}
             className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

@@ -7,14 +7,14 @@ const quizOptions = [
     id: 'beginner',
     title: 'Beginner',
     subtitle: 'Perfect for first-time travelers',
-    image: '/images/skiBeginner',
+    image: '/images/skiBeginner.jpg',
     icon: Compass
   },
   {
     id: 'experienced',
     title: 'Experienced',
     subtitle: 'For seasoned adventurers',
-    image: '/images/skiExperienced',
+    image: '/images/skiExperienced.jpg',
     icon: Brain
   }
 ];
