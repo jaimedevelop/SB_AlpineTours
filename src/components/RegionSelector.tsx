@@ -1,29 +1,34 @@
 import React from 'react';
 import { MapPin } from 'lucide-react';
 
+import mammothMountain from '../imageFiles/Mammoth Mountain.jpg';
+import boyneMountain from '../imageFiles/Boyne Mountain.jpg';
+import steamboat from '../imageFiles/Steamboat.jpg';
+import killington from '../imageFiles/Killington.jpeg';
+
 const regions = [
   {
     id: 'western',
     name: 'Western',
-    image: '/images/Mammoth Mountain.jpg',
+    image: mammothMountain,
     description: 'Pacific Coast mountains with deep powder',
   },
   {
     id: 'central',
     name: 'Central',
-    image: '/images/Boyne Mountain.jpg',
+    image: boyneMountain,
     description: 'Midwest slopes perfect for learning',
   },
   {
     id: 'rocky',
     name: 'Rocky',
-    image: '/images/Steamboat.jpg',
+    image: steamboat,
     description: 'High altitude peaks with varied terrain',
   },
   {
     id: 'eastern',
     name: 'Eastern',
-    image: '/images/Killington.jpeg',
+    image: killington,
     description: 'Classic New England skiing experience',
   },
 ];

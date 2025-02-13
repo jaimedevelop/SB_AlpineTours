@@ -2,19 +2,22 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Compass, Brain } from 'lucide-react';
 
+import skiBeginner from '../imageFiles/skiBeginner.jpg';
+import skiExperienced from '../imageFiles/skiExperienced.jpg';
+
 const quizOptions = [
   {
     id: 'beginner',
     title: 'Beginner',
     subtitle: 'Perfect for first-time travelers',
-    image: '/images/skiBeginner.jpg',
+    image: skiBeginner,
     icon: Compass
   },
   {
     id: 'experienced',
     title: 'Experienced',
     subtitle: 'For seasoned adventurers',
-    image: '/images/skiExperienced.jpg',
+    image: skiExperienced,
     icon: Brain
   }
 ];
