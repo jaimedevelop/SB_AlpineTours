@@ -1,16 +1,16 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import Welcome from './components/Welcome';
-import QuizSelector from './components/QuizSelector';
-import BeginnerQuiz from './components/BeginnerQuiz';
-import ExperiencedQuiz from './components/ExperiencedQuiz';
-import LoadingScreen from './components/LoadingScreen';
+import Welcome from './components/componentsAuthentication/Welcome';
+import QuizSelector from './components/componentsQuiz/QuizSelector';
+import BeginnerQuiz from './components/componentsQuiz/BeginnerQuiz';
+import ExperiencedQuiz from './components/componentsQuiz/ExperiencedQuiz';
+import LoadingScreen from './components/componentsQuiz/LoadingScreen';
 import SkiMap from './components/SkiMap';
 import ResortList from './components/ResortList';
-import Dashboard from './components/Dashboard';
-import Login from './components/Login';
-import CreateAccount from './components/CreateAccount';
+import Dashboard from './components/componentsDashboard/Dashboard';
+import Login from './components/componentsAuthentication/Login';
+import CreateAccount from './components/componentsAuthentication/CreateAccount';
 
 function App() {
   const location = useLocation();

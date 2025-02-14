@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Settings, User, Map, Home, Compass } from 'lucide-react';
-import UserInfo from './dashboard/UserInfo';
-import SettingsPage from './dashboard/SettingsPage';
-import Explore from './dashboard/YourResorts';
-import PlanTrip from './dashboard/PlanTrip';
-import SavedResorts from './dashboard/SavedResorts';
+import UserInfo from './UserInfo';
+import SettingsPage from './SettingsPage';
+import Explore from './YourResorts';
+import PlanTrip from './PlanTrip';
+import SavedResorts from './SavedResorts';
 
 const tabs = [
   { id: 'plan', label: 'Plan A Trip', icon: Map },
