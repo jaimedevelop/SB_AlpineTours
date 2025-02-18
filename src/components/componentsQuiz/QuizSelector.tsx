@@ -2,8 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Compass, Brain } from 'lucide-react';
 
-import skiBeginner from '../imageFiles/skiBeginner.jpg';
-import skiExperienced from '../imageFiles/skiExperienced.jpg';
+import skiBeginner from '../../imageFiles/skiBeginner.jpg';
+import skiExperienced from '../../imageFiles/skiExperienced.jpg';
 
 const quizOptions = [
   {
