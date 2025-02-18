@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowLeft, AlertCircle } from 'lucide-react';
+<<<<<<< HEAD
 import { signIn } from '../../firebase/auth';
+=======
+import { signIn } from '../firebase/auth';
+>>>>>>> fd902988f73cf601971de361905987b256b96ccf
 import { GoogleAuthProvider, signInWithPopup, getAuth, signInWithCredential, OAuthProvider } from 'firebase/auth';
 
 export default function Login() {

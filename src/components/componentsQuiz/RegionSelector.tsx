@@ -1,10 +1,17 @@
 import React from 'react';
 import { MapPin } from 'lucide-react';
 
+<<<<<<< HEAD
 import mammothMountain from '../../imageFiles/Mammoth Mountain.jpg';
 import boyneMountain from '../../imageFiles/Boyne Mountain.jpg';
 import steamboat from '../../imageFiles/Steamboat.jpg';
 import killington from '../../imageFiles/Killington.jpeg';
+=======
+import mammothMountain from '../imageFiles/Mammoth Mountain.jpg';
+import boyneMountain from '../imageFiles/Boyne Mountain.jpg';
+import steamboat from '../imageFiles/Steamboat.jpg';
+import killington from '../imageFiles/Killington.jpeg';
+>>>>>>> fd902988f73cf601971de361905987b256b96ccf
 
 const regions = [
   {

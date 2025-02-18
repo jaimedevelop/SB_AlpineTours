@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Calendar, ArrowLeft, AlertCircle } from 'lucide-react';
+<<<<<<< HEAD
 import { signUp } from '../../firebase/auth';
 import { updateUserProfile } from '../../firebase/database';
+=======
+import { signUp } from '../firebase/auth';
+import { updateUserProfile } from '../firebase/database';
+>>>>>>> fd902988f73cf601971de361905987b256b96ccf
 
 export default function CreateAccount() {
   const navigate = useNavigate();
