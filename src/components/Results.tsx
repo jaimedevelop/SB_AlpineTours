@@ -58,7 +58,7 @@ const regionCenters = {
   western: [41.8781, -120.0000],
   central: [44.9319, -89.6832],
   rocky: [39.5501, -106.0000],
-  eastern: [43.6045, -72.8201],
+  eastern: [40.2747, -75.4695],
 };
 
 interface MapControllerProps {

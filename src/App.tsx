@@ -1,14 +1,16 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import Welcome from './components/Welcome';
-import Quiz from './components/Quiz';
-import LoadingScreen from './components/LoadingScreen';
-import Results from './components/Results';
+import Welcome from './components/componentsAuthentication/Welcome';
+import QuizSelector from './components/componentsQuiz/QuizSelector';
+import BeginnerQuiz from './components/componentsQuiz/BeginnerQuiz';
+import ExperiencedQuiz from './components/componentsQuiz/ExperiencedQuiz';
+import LoadingScreen from './components/componentsQuiz/LoadingScreen';
+import SkiMap from './components/SkiMap';
 import ResortList from './components/ResortList';
-import Dashboard from './components/Dashboard';
-import Login from './components/Login';
-import CreateAccount from './components/CreateAccount';
+import Dashboard from './components/componentsDashboard/Dashboard';
+import Login from './components/componentsAuthentication/Login';
+import CreateAccount from './components/componentsAuthentication/CreateAccount';
 
 function App() {
   const location = useLocation();
@@ -34,7 +36,27 @@ function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <Quiz />
+              <QuizSelector />
+            </motion.div>
+          } />
+          <Route path="/quiz/beginner" element={
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <BeginnerQuiz />
+            </motion.div>
+          } />
+          <Route path="/quiz/experienced" element={
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ExperiencedQuiz />
             </motion.div>
           } />
           <Route path="/loading" element={
@@ -54,7 +76,7 @@ function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <Results />
+              <SkiMap />
             </motion.div>
           } />
           <Route path="/resorts" element={
