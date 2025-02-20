@@ -4,6 +4,7 @@ import { database } from '../firebase';
 import { ref, onValue } from 'firebase/database';
 import { Resort } from '../types/types.ts';
 import { MapPin, X } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import ResortPopup from './ResortPopup';
 import PriceFilter from './filters/PriceFilter';
 import DifficultyFilter from './filters/DifficultyFilter';
@@ -71,7 +72,35 @@ const REGION_COORDINATES = {
   }
 };
 
+const normalizeRegion = (region: string): 'East' | 'West' | 'Rocky' | 'Central' | '' => {
+    const regionMap: { [key: string]: 'East' | 'West' | 'Rocky' | 'Central' } = {
+      'eastern': 'East',
+      'western': 'West',
+      'rocky': 'Rocky',
+      'central': 'Central',
+      'east': 'East',
+      'west': 'West'
+    };
+    return regionMap[region.toLowerCase()] || '';
+  };
+
+interface BeginnerQuizState {
+  address: string;
+  tripDuration: string;
+  noTimeLimit: boolean;
+  costType: 'daily' | 'total';
+  costAmount: string;
+  interests: string[];
+}
+
+interface ExperiencedQuizState {
+  region: 'East' | 'West' | 'Rocky' | 'Central';
+  skill: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  budget: 'budget' | 'moderate' | 'premium' | 'luxury';
+  interests: string[];
+};
 export default function SkiMap() {
+  const locationHook = useLocation();
   const [resorts, setResorts] = useState<Resort[]>([]);
   const [selectedResort, setSelectedResort] = useState<Resort | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterType>(null);
@@ -243,6 +272,100 @@ export default function SkiMap() {
     }
   };
 
+  useEffect(() => {
+  const quizState = locationHook.state as BeginnerQuizState | ExperiencedQuizState | null;
+  
+  if (!quizState) {
+    console.log('No quiz state found');
+    return;
+  }
+
+  console.log('Quiz State:', quizState); // Debug log
+
+  const isBeginnerQuiz = 'address' in quizState;
+  console.log('Is Beginner Quiz:', isBeginnerQuiz); // Debug log
+
+  if (isBeginnerQuiz) {
+    const beginnerState = quizState as BeginnerQuizState;
+    console.log('Beginner Quiz State:', beginnerState); // Debug log
+
+    // Set price filter from beginner quiz
+    if (beginnerState.costType === 'daily') {
+      const costAmount = Number(beginnerState.costAmount);
+      console.log('Setting price range:', [0, costAmount]); // Debug log
+      setPriceRange([0, costAmount]);
+    }
+
+    // Set difficulty filter for beginners
+    console.log('Setting difficulty to Green'); // Debug log
+    setSelectedDifficulties(['Green']);
+    setActiveFilter('difficulty');
+
+    // Set distance filter if location is provided
+    if (beginnerState.address) {
+      console.log('Setting location:', beginnerState.address); // Debug log
+      setLocation(beginnerState.address);
+      setActiveFilter('distance');
+    }
+  } else {
+    const experiencedState = quizState as ExperiencedQuizState;
+    console.log('Experienced Quiz State:', experiencedState); // Debug log
+
+    // Set region filter
+      if (experiencedState.region) {
+    const normalizedRegion = normalizeRegion(experiencedState.region);
+    console.log('Setting normalized region:', normalizedRegion);
+    setSelectedRegion(normalizedRegion);
+    
+    if (normalizedRegion) {
+      // Temporarily set active filter to region to trigger the map movement
+      setActiveFilter('region');
+      // Close the filter panel after a short delay
+      setTimeout(() => {
+        setActiveFilter(null);
+      }, 500);
+    }
+  }
+
+    // Set difficulty filter based on skill level
+    const skillLevelToDifficulty: Record<string, string[]> = {
+      'beginner': ['Green'],
+      'intermediate': ['Blue'],
+      'advanced': ['Black'],
+      'expert': ['Double Black']
+    };
+    
+    if (experiencedState.skill && skillLevelToDifficulty[experiencedState.skill]) {
+      const difficulties = skillLevelToDifficulty[experiencedState.skill];
+      console.log('Setting difficulties:', difficulties); // Debug log
+      setSelectedDifficulties(difficulties);
+      setActiveFilter('difficulty');
+    }
+
+    // Set price filter
+    if (experiencedState.budget) {
+      const budgetRanges: Record<string, [number, number]> = {
+        'budget': [0, 100],
+        'moderate': [100, 200],
+        'premium': [200, 300],
+        'luxury': [300, 500]
+      };
+      
+      if (budgetRanges[experiencedState.budget]) {
+        const priceRange = budgetRanges[experiencedState.budget];
+        console.log('Setting price range:', priceRange); // Debug log
+        setPriceRange(priceRange);
+      }
+    }
+
+    // Set the active filter to region last
+    setTimeout(() => {
+      console.log('Setting active filter to region'); // Debug log
+      setActiveFilter('region');
+    }, 100);
+  }
+}, []);
+  
   useEffect(() => {
     const resortsRef = ref(database, 'resorts');
     onValue(resortsRef, (snapshot) => {

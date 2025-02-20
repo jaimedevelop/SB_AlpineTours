@@ -19,6 +19,30 @@ export default function BeginnerQuiz() {
     interests: [] as string[]
   });
 
+  const isStep1Valid = () => {
+    return formData.address && (formData.noTimeLimit || formData.tripDuration);
+  };
+
+  const isStep2Valid = () => {
+    return formData.costType && Number(formData.costAmount) > 0;
+  };
+
+  const isStep3Valid = () => {
+    return formData.interests.length > 0;
+  };
+
+  const handleSubmit = () => {
+    console.log('Final Quiz Selections:');
+    console.log('Starting Location:', formData.address);
+    console.log('Trip Duration:', formData.noTimeLimit ? 'Flexible' : `${formData.tripDuration} days`);
+    console.log('Budget:', formData.costType === 'daily' 
+      ? `${formData.costAmount} per day` 
+      : `${formData.costAmount} total`);
+    console.log('Interests:', formData.interests.join(', '));
+
+    navigate('/results');
+  };
+  
   const StepIndicator = ({ currentStep, totalSteps }: QuizStep) => (
     <div className="flex items-center justify-center space-x-2 mb-8">
       {[...Array(totalSteps)].map((_, i) => (
@@ -197,7 +221,7 @@ const renderCostStep = () => (
     );
   };
 
-  return (
+   return (
     <div className="container mx-auto px-4 py-16 max-w-2xl">
       <StepIndicator currentStep={step} totalSteps={3} />
       
@@ -216,15 +240,27 @@ const renderCostStep = () => (
           </button>
           
           <button
-            onClick={() => setStep(step + 1)}
-            disabled={step === 3}
+            onClick={() => {
+              if (step === 3 && isStep3Valid()) {
+                handleSubmit();
+              } else {
+                setStep(step + 1);
+              }
+            }}
+            disabled={
+              (step === 1 && !isStep1Valid()) ||
+              (step === 2 && !isStep2Valid()) ||
+              (step === 3 && !isStep3Valid())
+            }
             className={`flex items-center px-6 py-2 rounded-lg ${
-              step === 3
+              ((step === 1 && !isStep1Valid()) ||
+               (step === 2 && !isStep2Valid()) ||
+               (step === 3 && !isStep3Valid()))
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-indigo-600 text-white hover:bg-indigo-700'
             }`}
           >
-            Next
+            {step === 3 ? 'Submit' : 'Next'}
             <ArrowRight className="w-4 h-4 ml-2" />
           </button>
         </div>

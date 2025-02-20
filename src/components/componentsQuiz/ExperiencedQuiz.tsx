@@ -39,6 +39,14 @@ export default function ExperiencedQuiz() {
   };
 
   const handleComplete = () => {
+    // Log selections to console
+    console.log('Final Experienced Quiz Selections:');
+    console.log('Region:', answers.region);
+    console.log('Skill Level:', answers.skill);
+    console.log('Budget:', answers.budget);
+    console.log('Interests:', answers.interests?.join(', '));
+
+    // Navigate to loading page with answers
     navigate('/loading', { state: answers });
   };
 
@@ -82,7 +90,7 @@ export default function ExperiencedQuiz() {
             <ChevronLeft className="w-5 h-5" />
             <span>{currentQuestion === 0 ? 'Back' : 'Previous'}</span>
           </button>
-
+          
           <button
             onClick={() => {
               if (currentQuestion < questions.length - 1) {
