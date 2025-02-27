@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TotalCostCalculator } from './TotalCostCalculator';
 
 interface FormData {
@@ -13,6 +13,11 @@ interface BudgetPlannerProps {
 }
 
 export function BudgetPlanner({ tripLength, onBudgetChange }: BudgetPlannerProps) {
+  // Use refs to track initial mount and previous values
+  const isInitialMount = useRef(true);
+  const prevTripLength = useRef(tripLength);
+  const prevBudgetAmount = useRef("");
+  
   const [formData, setFormData] = useState<FormData>({
     costType: 'total',
     costAmount: (parseInt(tripLength || '1') * 200).toString(), // Calculate initial amount based on tripLength
@@ -21,22 +26,51 @@ export function BudgetPlanner({ tripLength, onBudgetChange }: BudgetPlannerProps
 
   // Update local state when tripLength prop changes
   useEffect(() => {
-    if (tripLength !== formData.tripLength) {
+    // Skip if the value hasn't changed to avoid needless updates
+    if (tripLength !== prevTripLength.current) {
+      prevTripLength.current = tripLength;
       const newTripLength = tripLength || '1';
+      
       setFormData(prev => ({
         ...prev,
         tripLength: newTripLength,
-        costAmount: (parseInt(newTripLength) * 200).toString() // Update cost based on new trip length
+        // Only recalculate amount on initial mount or if we're changing from a valid trip length
+        costAmount: isInitialMount.current ? 
+          (parseInt(newTripLength) * 200).toString() : 
+          prev.costAmount
       }));
+    }
+    
+    // Set initial mount flag to false after first render
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
     }
   }, [tripLength]);
 
-  // Notify parent component when budget amount changes
+  // Notify parent component when budget amount changes, but prevent circular updates
   useEffect(() => {
-    if (onBudgetChange) {
+    // Only call the callback if:
+    // 1. We're past the initial mount
+    // 2. There's a callback provided
+    // 3. The value has actually changed
+    if (!isInitialMount.current && 
+        onBudgetChange && 
+        formData.costAmount !== prevBudgetAmount.current) {
+      
+      // Update our ref to the current value
+      prevBudgetAmount.current = formData.costAmount;
+      
+      // Notify parent
       onBudgetChange(formData.costAmount);
     }
   }, [formData.costAmount, onBudgetChange]);
+
+  // Handle slider change
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    target.style.setProperty('--percent', `${(Number(target.value) / 10000) * 100}%`);
+    setFormData(prev => ({ ...prev, costAmount: target.value }));
+  };
 
   return (
     <div className="space-y-6">
@@ -68,11 +102,7 @@ export function BudgetPlanner({ tripLength, onBudgetChange }: BudgetPlannerProps
             style={{
               '--percent': `${(Number(formData.costAmount) / 10000) * 100}%`
             } as React.CSSProperties}
-            onInput={(e) => {
-              const target = e.target as HTMLInputElement;
-              target.style.setProperty('--percent', `${(Number(target.value) / 10000) * 100}%`);
-              setFormData({ ...formData, costAmount: target.value });
-            }}
+            onChange={handleSliderChange}
           />
           <div className="flex justify-between text-xs text-gray-500">
             <span>$0</span>

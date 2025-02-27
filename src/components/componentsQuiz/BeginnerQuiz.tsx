@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowLeft, ArrowRight, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { BudgetPlanner } from './BudgetPlanner';
@@ -11,6 +11,9 @@ interface QuizStep {
 export default function BeginnerQuiz() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  // Use a ref to track the previous budget amount to prevent circular updates
+  const prevBudgetAmount = useRef("");
+  
   const [formData, setFormData] = useState({
     address: '',
     tripDuration: '1',
@@ -32,11 +35,16 @@ export default function BeginnerQuiz() {
     return formData.interests.length > 0;
   };
 
+  // Modified to prevent circular updates
   const handleBudgetChange = (budgetAmount: string) => {
-    setFormData(prev => ({
-      ...prev,
-      costAmount: budgetAmount
-    }));
+    // Only update if the value has actually changed
+    if (budgetAmount !== prevBudgetAmount.current) {
+      prevBudgetAmount.current = budgetAmount;
+      setFormData(prev => ({
+        ...prev,
+        costAmount: budgetAmount
+      }));
+    }
   };
 
   const handleSubmit = () => {

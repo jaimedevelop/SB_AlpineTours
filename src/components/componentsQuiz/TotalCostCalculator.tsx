@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SkipBack as Ski, Home, UtensilsCrossed, Plus } from 'lucide-react';
+import { SkipBack as Ski, Home, UtensilsCrossed, Plus, Lock, Unlock } from 'lucide-react';
 
 interface CostCategory {
   id: string;
@@ -7,6 +7,7 @@ interface CostCategory {
   icon: React.ReactNode;
   amount: string;
   percentage: number;
+  locked: boolean;
 }
 
 interface TotalCostCalculatorProps {
@@ -21,61 +22,111 @@ export function TotalCostCalculator({ amount, tripLength }: TotalCostCalculatorP
       title: 'Lift Tickets',
       icon: <Ski className="w-5 h-5" />,
       amount: '0',
-      percentage: 30
+      percentage: 30,
+      locked: false
     },
     {
       id: 'lodging',
       title: 'Lodging',
       icon: <Home className="w-5 h-5" />,
       amount: '0',
-      percentage: 50
+      percentage: 50,
+      locked: false
     },
     {
       id: 'food',
       title: 'Food & Dining',
       icon: <UtensilsCrossed className="w-5 h-5" />,
       amount: '0',
-      percentage: 20
+      percentage: 20,
+      locked: false
     }
   ]);
 
   // Update category amounts when total budget changes
   useEffect(() => {
     const totalBudget = Number(amount);
-    setCategories(categories.map(category => ({
-      ...category,
-      amount: Math.round(totalBudget * (category.percentage / 100)).toString()
-    })));
-  }, [amount]);
+    
+    // First, calculate the total locked amount and percentage
+    const lockedCategories = categories.filter(cat => cat.locked);
+    const lockedAmount = lockedCategories.reduce((sum, cat) => sum + Number(cat.amount), 0);
+    const lockedPercentage = lockedCategories.reduce((sum, cat) => sum + cat.percentage, 0);
+    
+    // Calculate remaining budget and percentage for unlocked categories
+    const remainingBudget = Math.max(0, totalBudget - lockedAmount);
+    const remainingPercentage = Math.max(0, 100 - lockedPercentage);
+    
+    // Update categories
+    setCategories(categories.map(category => {
+      if (category.locked) {
+        // Keep locked categories as they are
+        return category;
+      } else {
+        // For unlocked categories, distribute the remaining budget proportionally
+        if (remainingPercentage === 0) {
+          return {
+            ...category,
+            amount: '0',
+            percentage: 0
+          };
+        }
+        
+        // Calculate the relative percentage within the unlocked categories
+        const relativePercentage = (category.percentage / remainingPercentage) * 100;
+        const newAmount = Math.round(remainingBudget * (relativePercentage / 100));
+        
+        return {
+          ...category,
+          amount: newAmount.toString(),
+          percentage: (newAmount / totalBudget) * 100
+        };
+      }
+    }));
+  }, [amount, categories.map(c => c.locked).join(',')]);
 
   const handleSliderChange = (categoryId: string, newAmount: string) => {
     const totalBudget = Number(amount);
     const newAmountNum = Number(newAmount);
     
-    // Calculate new percentage for the changed category
-    const newPercentage = Math.min((newAmountNum / totalBudget) * 100, 100);
-    
     // Find the current category and other categories
     const currentCategory = categories.find(c => c.id === categoryId)!;
     const otherCategories = categories.filter(c => c.id !== categoryId);
     
-    // Calculate remaining percentage for other categories
-    const remainingPercentage = Math.max(100 - newPercentage, 0);
+    // Get locked categories (excluding the current one)
+    const lockedCategories = otherCategories.filter(c => c.locked);
+    const lockedAmount = lockedCategories.reduce((sum, c) => sum + Number(c.amount), 0);
     
-    // Get the total percentage of other categories
-    const totalOtherPercentage = otherCategories.reduce((sum, c) => sum + c.percentage, 0);
+    // Calculate the maximum amount this category can have
+    const maxAmount = totalBudget - lockedAmount;
+    const adjustedNewAmount = Math.min(newAmountNum, maxAmount);
+    
+    // Calculate new percentage for the changed category
+    const newPercentage = (adjustedNewAmount / totalBudget) * 100;
+    
+    // Get unlocked categories (excluding the current one)
+    const unlockedCategories = otherCategories.filter(c => !c.locked);
+    
+    // Calculate remaining percentage and amount for unlocked categories
+    const remainingPercentage = Math.max(0, 100 - newPercentage - lockedCategories.reduce((sum, c) => sum + c.percentage, 0));
+    const remainingAmount = Math.max(0, totalBudget - adjustedNewAmount - lockedAmount);
+    
+    // Get the total percentage of other unlocked categories
+    const totalUnlockedPercentage = unlockedCategories.reduce((sum, c) => sum + c.percentage, 0);
     
     // Update all categories with new percentages and amounts
     setCategories(categories.map(category => {
       if (category.id === categoryId) {
         return {
           ...category,
-          amount: newAmount,
+          amount: adjustedNewAmount.toString(),
           percentage: newPercentage
         };
+      } else if (category.locked) {
+        // Keep locked categories as they are
+        return category;
       } else {
         // If there's no remaining percentage, set others to 0
-        if (remainingPercentage === 0) {
+        if (remainingPercentage === 0 || totalUnlockedPercentage === 0) {
           return {
             ...category,
             percentage: 0,
@@ -84,11 +135,8 @@ export function TotalCostCalculator({ amount, tripLength }: TotalCostCalculatorP
         }
         
         // Distribute remaining percentage proportionally
-        const adjustmentFactor = totalOtherPercentage === 0 
-          ? remainingPercentage / otherCategories.length 
-          : (remainingPercentage * category.percentage) / totalOtherPercentage;
-        
-        const newCategoryAmount = Math.round(totalBudget * (adjustmentFactor / 100));
+        const adjustmentFactor = (remainingPercentage * category.percentage) / totalUnlockedPercentage;
+        const newCategoryAmount = Math.round(remainingAmount * (category.percentage / totalUnlockedPercentage));
         
         return {
           ...category,
@@ -97,6 +145,14 @@ export function TotalCostCalculator({ amount, tripLength }: TotalCostCalculatorP
         };
       }
     }));
+  };
+
+  const toggleLock = (categoryId: string) => {
+    setCategories(categories.map(category => 
+      category.id === categoryId 
+        ? { ...category, locked: !category.locked } 
+        : category
+    ));
   };
 
   const getDailyCost = (totalAmount: string): string => {
@@ -125,7 +181,7 @@ export function TotalCostCalculator({ amount, tripLength }: TotalCostCalculatorP
         {categories.map(category => (
           <div
             key={category.id}
-            className="bg-white rounded-lg border border-gray-200 overflow-hidden p-4 space-y-4"
+            className={`bg-white rounded-lg border ${category.locked ? 'border-indigo-300 shadow-md' : 'border-gray-200'} overflow-hidden p-4 space-y-4`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -135,6 +191,13 @@ export function TotalCostCalculator({ amount, tripLength }: TotalCostCalculatorP
               <div className="flex items-center space-x-2">
                 <span className="text-indigo-600 font-medium">${category.amount}</span>
                 <span className="text-gray-400">({Math.round(category.percentage)}%)</span>
+                <button 
+                  onClick={() => toggleLock(category.id)}
+                  className={`p-1 rounded-full transition-colors ${category.locked ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                  title={category.locked ? "Unlock" : "Lock"}
+                >
+                  {category.locked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+                </button>
               </div>
             </div>
             <div className="space-y-2">
@@ -145,7 +208,8 @@ export function TotalCostCalculator({ amount, tripLength }: TotalCostCalculatorP
                 step="50"
                 value={category.amount}
                 onChange={(e) => handleSliderChange(category.id, e.target.value)}
-                className="category-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-indigo-600 [&::-moz-range-thumb]:border-0 relative"
+                disabled={category.locked}
+                className={`category-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-indigo-600 [&::-moz-range-thumb]:border-0 relative ${category.locked ? 'opacity-70' : ''}`}
                 style={{
                   '--percent': `${(Number(category.amount) / Number(amount)) * 100}%`
                 } as React.CSSProperties}
