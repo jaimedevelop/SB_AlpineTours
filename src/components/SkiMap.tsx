@@ -120,39 +120,51 @@ export default function SkiMap() {
 
   const updateDistanceCircle = () => {
     if (!mapRef.current || !selectedLocationCoords) return;
-    const map = mapRef.current;
+  const map = mapRef.current;
 
-    // Remove existing layers if they exist
-    if (map.getLayer('distance-fill')) map.removeLayer('distance-fill');
-    if (map.getSource('distance-source')) map.removeSource('distance-source');
+  // Remove existing layers and sources
+  if (map.getLayer('distance-fill')) map.removeLayer('distance-fill');
+  if (map.getLayer('distance-border')) map.removeLayer('distance-border');
+  if (map.getSource('distance-source')) map.removeSource('distance-source');
 
-    // Create a circle using turf.js
-    const center = selectedLocationCoords;
-    const radius = maxDistance * 1.609; // Convert miles to kilometers
-    const options = {
-      steps: 64,
-      units: 'kilometers'
-    };
-    const circle = turf.circle(center, radius, options);
-
-    // Add the circle source
-    map.addSource('distance-source', {
-      type: 'geojson',
-      data: circle
-    });
-
-    // Add the masked circle layer
-    map.addLayer({
-      id: 'distance-fill',
-      type: 'fill',
-      source: 'distance-source',
-      paint: {
-        'fill-color': '#4264fb',
-        'fill-opacity': 0.2
-      },
-      filter: ['==', '$type', 'Polygon']
-    }, 'region-states-outline'); // Place below state outlines
+  // Create a circle using turf.js
+  const center = selectedLocationCoords;
+  const radius = maxDistance * 1.609; // Convert miles to kilometers
+  const options = {
+    steps: 64,
+    units: 'kilometers'
   };
+  const circle = turf.circle(center, radius, options);
+
+  // Add the circle source
+  map.addSource('distance-source', {
+    type: 'geojson',
+    data: circle
+  });
+
+  // Add the filled circle layer
+  map.addLayer({
+    id: 'distance-fill',
+    type: 'fill',
+    source: 'distance-source',
+    paint: {
+      'fill-color': '#4264fb',
+      'fill-opacity': 0.2
+    }
+  }, 'region-states-outline');
+
+  // Add the circle border layer
+  map.addLayer({
+    id: 'distance-border',
+    type: 'line',
+    source: 'distance-source',
+    paint: {
+      'line-color': '#4264fb',
+      'line-width': 2,
+      'line-opacity': 0.8
+    }
+  });
+};
 
   const handleMapLoad = async (event: { target: mapboxgl.Map }) => {
     const map = event.target;
@@ -272,6 +284,7 @@ export default function SkiMap() {
     }
   };
 
+  
   useEffect(() => {
   const quizState = locationHook.state as BeginnerQuizState | ExperiencedQuizState | null;
   
@@ -366,19 +379,32 @@ export default function SkiMap() {
   }
 }, []);
   
-  useEffect(() => {
-    const resortsRef = ref(database, 'resorts');
-    onValue(resortsRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setResorts(Object.values(data));
-      }
-    });
-  }, []);
+ // Fetch resorts from database
+useEffect(() => {
+  const resortsRef = ref(database, 'resorts');
+  onValue(resortsRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      setResorts(Object.values(data));
+    }
+  });
+}, []);
 
-  useEffect(() => {
+// Update distance circle effect
+useEffect(() => {
+  if (!selectedLocationCoords || !mapRef.current) return;
+  
+  console.log('Updating distance circle:', {
+    coords: selectedLocationCoords,
+    maxDistance
+  });
+  
+  try {
     updateDistanceCircle();
-  }, [selectedLocationCoords, maxDistance]);
+  } catch (error) {
+    console.error('Error updating distance circle:', error);
+  }
+}, [selectedLocationCoords, maxDistance]);
   
   useEffect(() => {
     return () => {
@@ -427,61 +453,88 @@ export default function SkiMap() {
   }, []);
 
   // Filter resorts based on all active filters
-  const filteredResorts = useMemo(() => {
-    return resorts.filter(resort => {
-      // Region Filter
-      if (selectedRegion && resort.region !== selectedRegion) {
-        return false;
-      }
-
-      // Price Filter
-      const fullDayPrice = parseFloat(resort.fullDayTicket.replace(/[^0-9.]/g, ''));
-      if (isNaN(fullDayPrice) || fullDayPrice < priceRange[0] || fullDayPrice > priceRange[1]) {
-        return false;
-      }
-
-      // Difficulty Filter
-      if (selectedDifficulties.length > 0) {
-        const difficultyMap: { [key: string]: string } = {
-          'Green': resort.green,
-          'Blue': resort.blue,
-          'Double Blue': resort.doubleBlue,
-          'Black': resort.black,
-          'Double Black': resort.doubleBlack
-        };
+  // Updated filteredResorts useMemo with complete dependency array
+const filteredResorts = useMemo(() => {
+  return resorts.filter(resort => {
+    // Distance Filter
+    if (selectedLocationCoords && location) {
+      try {
+        // Ensure resort coordinates are valid numbers
+        const resortLong = Number(resort.longitude);
+        const resortLat = Number(resort.latitude);
         
-        const hasSelectedDifficulty = selectedDifficulties.some(difficulty => {
-          const percentage = parseFloat(difficultyMap[difficulty].replace('%', ''));
-          return !isNaN(percentage) && percentage >= 30;
-        });
-        
-        if (!hasSelectedDifficulty) {
+        if (isNaN(resortLong) || isNaN(resortLat)) {
           return false;
         }
-      }
 
-      // Amenities Filter
-      if (selectedAmenities.length > 0) {
-        const amenityMap: { [key: string]: boolean | null } = {
-          'Night Skiing': resort.nightSkiing,
-          'Terrain Park': resort.terrainPark === 'Yes',
-          'Backcountry Access': resort.backcountry,
-          'Snow Tubing': resort.snowTubing,
-          'Ice Skating': resort.iceSkating
-        };
-
-        const hasAllSelectedAmenities = selectedAmenities.every(
-          amenity => amenityMap[amenity]
-        );
-
-        if (!hasAllSelectedAmenities) {
+        const from = turf.point([selectedLocationCoords[0], selectedLocationCoords[1]]);
+        const to = turf.point([resortLong, resortLat]);
+        
+        const distance = turf.distance(from, to, { units: 'miles' });
+        
+        // If resort is outside the radius, filter it out
+        if (distance > maxDistance) {
           return false;
         }
+      } catch (error) {
+        console.error('Error calculating distance for resort:', resort.name, error);
+        return false;
       }
+    }
 
-      return true;
-    });
-  }, [resorts, priceRange, selectedDifficulties, selectedRegion, selectedAmenities]);
+    // Region Filter
+    if (selectedRegion && resort.region !== selectedRegion) {
+      return false;
+    }
+
+    // Price Filter
+    const fullDayPrice = parseFloat(resort.fullDayTicket.replace(/[^0-9.]/g, ''));
+    if (isNaN(fullDayPrice) || fullDayPrice < priceRange[0] || fullDayPrice > priceRange[1]) {
+      return false;
+    }
+
+    // Difficulty Filter
+    if (selectedDifficulties.length > 0) {
+      const difficultyMap: { [key: string]: string } = {
+        'Green': resort.green,
+        'Blue': resort.blue,
+        'Double Blue': resort.doubleBlue,
+        'Black': resort.black,
+        'Double Black': resort.doubleBlack
+      };
+      
+      const hasSelectedDifficulty = selectedDifficulties.some(difficulty => {
+        const percentage = parseFloat(difficultyMap[difficulty].replace('%', ''));
+        return !isNaN(percentage) && percentage >= 30;
+      });
+      
+      if (!hasSelectedDifficulty) {
+        return false;
+      }
+    }
+
+    // Amenities Filter
+    if (selectedAmenities.length > 0) {
+      const amenityMap: { [key: string]: boolean | null } = {
+        'Night Skiing': resort.nightSkiing,
+        'Terrain Park': resort.terrainPark === 'Yes',
+        'Backcountry Access': resort.backcountry,
+        'Snow Tubing': resort.snowTubing,
+        'Ice Skating': resort.iceSkating
+      };
+
+      const hasAllSelectedAmenities = selectedAmenities.every(
+        amenity => amenityMap[amenity]
+      );
+
+      if (!hasAllSelectedAmenities) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+}, [resorts, priceRange, selectedDifficulties, selectedRegion, selectedAmenities, selectedLocationCoords, location, maxDistance]);
 
   const renderFilterPanel = () => {
     switch (activeFilter) {

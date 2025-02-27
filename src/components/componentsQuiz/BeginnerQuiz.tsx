@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { BudgetPlanner } from './BudgetPlanner';
 
 interface QuizStep {
   currentStep: number;
@@ -12,10 +13,10 @@ export default function BeginnerQuiz() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     address: '',
-    tripDuration: '',
+    tripDuration: '1',
     noTimeLimit: false,
-    costType: '',
-    costAmount: '0',
+    costType: 'total',
+    costAmount: '200',
     interests: [] as string[]
   });
 
@@ -29,6 +30,13 @@ export default function BeginnerQuiz() {
 
   const isStep3Valid = () => {
     return formData.interests.length > 0;
+  };
+
+  const handleBudgetChange = (budgetAmount: string) => {
+    setFormData(prev => ({
+      ...prev,
+      costAmount: budgetAmount
+    }));
   };
 
   const handleSubmit = () => {
@@ -82,7 +90,12 @@ export default function BeginnerQuiz() {
           value={formData.tripDuration}
           onChange={(e) => {
             const value = Math.min(Math.max(1, Number(e.target.value)), 30);
-            setFormData({ ...formData, tripDuration: value.toString() });
+            setFormData({ 
+              ...formData, 
+              tripDuration: value.toString(),
+              // Update costAmount based on trip duration if using total budget
+              costAmount: formData.costType === 'total' ? (value * 200).toString() : formData.costAmount
+            });
           }}
           placeholder="Enter number of days (1-30)"
           disabled={formData.noTimeLimit}
@@ -107,78 +120,12 @@ export default function BeginnerQuiz() {
     </div>
   );
 
-const renderCostStep = () => (
-    <div className="space-y-6">
-      <style>{`
-        input[type="range"]::before {
-          content: '';
-          width: var(--percent);
-        }
-      `}</style>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-4">
-          How would you like to plan your budget?
-        </label>
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {[
-            { id: 'daily', label: 'Cost per Day' },
-            { id: 'total', label: 'Total Trip Cost' }
-          ].map(({ id, label }) => (
-            <button
-              key={id}
-              onClick={() => setFormData({ ...formData, costType: id, costAmount: '0' })}
-              className={`p-4 border rounded-xl transition-all ${
-                formData.costType === id
-                  ? 'border-indigo-600 bg-indigo-50'
-                  : 'border-gray-200 hover:border-indigo-300'
-              }`}
-            >
-              <span className={formData.costType === id ? 'text-indigo-600' : 'text-gray-700'}>
-                {label}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-      
-      {formData.costType && (
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <label className="block text-sm font-medium text-gray-700">
-              {formData.costType === 'daily' ? 'Daily Budget' : 'Total Budget'}
-            </label>
-            <span className="text-sm font-medium text-indigo-600">
-              ${formData.costAmount}
-            </span>
-          </div>
-          <input
-            type="range"
-            min="0"
-            max={formData.costType === 'daily' ? '500' : '10000'}
-            step={formData.costType === 'daily' ? '10' : '100'}
-            value={formData.costAmount}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-indigo-600 [&::-moz-range-thumb]:border-0 relative before:absolute before:h-2 before:rounded-l-lg before:bg-indigo-600"
-            style={{
-              '--percent': `${(Number(formData.costAmount) / (formData.costType === 'daily' ? 500 : 10000)) * 100}%`
-            }}
-            onInput={(e) => {
-              const target = e.target as HTMLInputElement;
-              target.style.setProperty('--percent', `${(Number(target.value) / (formData.costType === 'daily' ? 500 : 10000)) * 100}%`);
-              setFormData({ ...formData, costAmount: target.value });
-            }}
-          />
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>$0</span>
-            <span>${formData.costType === 'daily' ? '500' : '10,000'}</span>
-          </div>
-        </div>
-      )}
-    </div>
+  const renderCostStep = () => (
+    <BudgetPlanner 
+      tripLength={formData.noTimeLimit ? '1' : formData.tripDuration}
+      onBudgetChange={handleBudgetChange}
+    />
   );
-  
-      
-      
 
   const renderInterestsStep = () => {
     const interests = [
@@ -221,7 +168,7 @@ const renderCostStep = () => (
     );
   };
 
-   return (
+  return (
     <div className="container mx-auto px-4 py-16 max-w-2xl">
       <StepIndicator currentStep={step} totalSteps={3} />
       

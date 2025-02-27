@@ -9,5 +9,5 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  assetsInclude: ['**/*.jpg', '**/*.webp', '**/*.svg'],
+  assetsInclude: ['**/*.jpg', '**/*.webp', '**/*.svg', '**/*.jpeg'],
 });

@@ -1,6 +1,5 @@
 import React from 'react';
 import { MapPin } from 'lucide-react';
-
 import mammothMountain from '../../imageFiles/Mammoth Mountain.jpg';
 import boyneMountain from '../../imageFiles/Boyne Mountain.jpg';
 import steamboat from '../../imageFiles/Steamboat.jpg';
