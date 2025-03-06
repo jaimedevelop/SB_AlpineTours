@@ -9,7 +9,7 @@ export default function Welcome() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="text-center mb-12">
         <Mountain className="w-20 h-20 text-white mb-4 mx-auto" />
-        <h1 className="text-5xl font-bold text-white mb-4">SkiMatch</h1>
+        <h1 className="text-5xl font-bold text-white mb-4">S&B Alpine Tours</h1>
         <p className="text-blue-100 text-xl">Find your perfect skiing destination</p>
       </div>
       
