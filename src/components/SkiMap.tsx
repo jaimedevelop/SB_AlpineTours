@@ -31,8 +31,8 @@ const REGION_COLORS = {
 // Region boundaries and view settings
 const REGION_COORDINATES = {
   East: { 
-    center: [-78.5, 42],
-    zoom: 4,
+    center: [-73.5, 43.5],
+    zoom: 5.5,
     bounds: {
       north: 47.5,
       south: 35,
@@ -109,7 +109,7 @@ export default function SkiMap() {
   const [selectedLocationCoords, setSelectedLocationCoords] = useState<[number, number] | null>(null);
 
   // Filter states
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 400]);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<string>('');
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
@@ -251,7 +251,7 @@ export default function SkiMap() {
   const isFilterActive = (filterType: FilterType): boolean => {
     switch (filterType) {
       case 'price':
-        return priceRange[0] > 0 || priceRange[1] < 200;
+        return priceRange[0] > 0 || priceRange[1] < 400;
       case 'difficulty':
         return selectedDifficulties.length > 0;
       case 'region':
