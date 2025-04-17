@@ -98,8 +98,21 @@ interface ExperiencedQuizState {
   skill: 'beginner' | 'intermediate' | 'advanced' | 'expert';
   budget: 'budget' | 'moderate' | 'premium' | 'luxury';
   interests: string[];
-};
-export default function SkiMap() {
+}
+
+interface SkiMapProps {
+  onMapClick?: (event: any) => void;
+  onResortSelect?: (resort: Resort) => void;
+  selectedResort?: Resort | null;
+  onFilteredResortsChange?: (resorts: Resort[]) => void;
+}
+
+export default function SkiMap({
+  onMapClick: externalMapClickHandler,
+  onResortSelect: externalResortSelectHandler,
+  selectedResort: externalSelectedResort,
+  onFilteredResortsChange
+}: SkiMapProps = {}) {
   const locationHook = useLocation();
   const [resorts, setResorts] = useState<Resort[]>([]);
   const [selectedResort, setSelectedResort] = useState<Resort | null>(null);
@@ -107,7 +120,6 @@ export default function SkiMap() {
   const [hoveredRegion, setHoveredRegion] = useState<string>('');
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [selectedLocationCoords, setSelectedLocationCoords] = useState<[number, number] | null>(null);
-
   // Filter states
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 400]);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
@@ -536,6 +548,14 @@ const filteredResorts = useMemo(() => {
   });
 }, [resorts, priceRange, selectedDifficulties, selectedRegion, selectedAmenities, selectedLocationCoords, location, maxDistance]);
 
+  // Add this effect to pass filtered resorts to parent
+useEffect(() => {
+  // Only call if the callback exists
+  if (onFilteredResortsChange) {
+    onFilteredResortsChange(filteredResorts);
+    console.log("Passing filtered resorts to parent:", filteredResorts.length);
+  }
+}, [filteredResorts]); // Intentionally not including onFilteredResortsChange in deps
   const renderFilterPanel = () => {
     switch (activeFilter) {
       case 'price':
@@ -580,6 +600,10 @@ const filteredResorts = useMemo(() => {
     
     setActiveFilter(null);
     setHoveredRegion('');
+  
+  if (externalMapClickHandler) {
+    externalMapClickHandler(event);
+  }
   };
 
   return (

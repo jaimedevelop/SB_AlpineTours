@@ -11,6 +11,7 @@ import ResortList from './components/ResortList';
 import Dashboard from './components/componentsDashboard/Dashboard';
 import Login from './components/componentsAuthentication/Login';
 import CreateAccount from './components/componentsAuthentication/CreateAccount';
+import MapWithSlidingPanel from './components/MapWithSlidingPanel';
 
 function App() {
   const location = useLocation();
@@ -76,7 +77,7 @@ function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <SkiMap />
+              <MapWithSlidingPanel />
             </motion.div>
           } />
           <Route path="/resorts" element={
