@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import RegionSelector from './RegionSelector';
+import QuizTimeSelector from './QuizTimeSelector'
 import SkillSelector from './SkillSelector';
 import BudgetSelector from './BudgetSelector';
 import InterestSelector from './InterestSelector';
@@ -16,6 +17,11 @@ export default function ExperiencedQuiz() {
       id: 'region',
       title: 'What region are you going to ski in?',
       component: RegionSelector,
+    },
+    {
+      id: 'time',
+      title: 'When are you planning to go skiing?',
+      component: QuizTimeSelector,
     },
     {
       id: 'skill',
