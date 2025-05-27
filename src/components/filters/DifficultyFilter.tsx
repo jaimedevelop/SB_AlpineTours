@@ -19,7 +19,7 @@ export default function DifficultyFilter({
 
   const difficulties = [
     {
-      name: 'Green',
+      name: 'green',
       label: 'Beginner',
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 	<path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22" />
@@ -31,7 +31,7 @@ export default function DifficultyFilter({
       textColor: 'text-white',
     },
     {
-      name: 'Blue',
+      name: 'blue',
       label: 'Amateur',
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 	<path fill="currentColor" d="M3 21V3h18v18z" />
@@ -43,7 +43,7 @@ export default function DifficultyFilter({
       textColor: 'text-white',
     },
     {
-      name: 'Double Blue',
+      name: 'doubleBlue',
       label: 'Intermediate',
       icon:<div className="flex gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 	<path fill="currentColor" d="M3 21V3h18v18z" />
@@ -57,7 +57,7 @@ export default function DifficultyFilter({
       textColor: 'text-white',
     },
     {
-      name: 'Black',
+      name: 'black',
       label: 'Advanced',
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 	<g fill="none" fillRule="evenodd">
@@ -72,7 +72,7 @@ export default function DifficultyFilter({
       textColor: 'text-white',
     },
     {
-      name: 'Double Black',
+      name: 'doubleBlack',
       label: 'Expert',
       icon: <div className="flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 	<g fill="none" fillRule="evenodd">

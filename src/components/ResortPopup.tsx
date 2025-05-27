@@ -9,27 +9,27 @@ export default function ResortPopup({ resort, onClose }: ResortPopupProps) {
   // Count how many difficulty levels have percentage values
   const difficultyLevels = [
     { 
-      value: resort.green, 
+      value: resort.difficulty.percent.green, 
       color: 'bg-gradient-to-r from-green-500 to-green-600', 
       textColor: 'text-white' 
     },
     { 
-      value: resort.blue, 
+      value: resort.difficulty.percent.blue, 
       color: 'bg-gradient-to-r from-blue-400 to-blue-500', 
       textColor: 'text-white' 
     },
     { 
-      value: resort.doubleBlue, 
+      value: resort.difficulty.percent.doubleBlue, 
       color: 'bg-gradient-to-r from-blue-700 to-blue-800', 
       textColor: 'text-white' 
     },
     { 
-      value: resort.black, 
+      value: resort.difficulty.percent.black, 
       color: 'bg-gradient-to-r from-gray-800 to-black', 
       textColor: 'text-white' 
     },
     { 
-      value: resort.doubleBlack, 
+      value: resort.difficulty.percent.doubleBlack, 
       color: 'bg-gradient-to-r from-black to-black', 
       textColor: 'text-yellow-400' 
     }
@@ -70,7 +70,7 @@ export default function ResortPopup({ resort, onClose }: ResortPopupProps) {
               className={`${level.color} ${level.textColor} flex items-center justify-center text-xs font-medium`}
               style={{ width: equalWidth }}
             >
-              {level.value}
+              {level.value}%
             </div>
           ))}
         </div>

@@ -28,12 +28,23 @@ export interface Resort {
   halfDayTicket: string;
   
   // Run difficulty percentages (as strings with % sign)
-  green: string;
-  blue: string;
-  doubleBlue: string;
-  black: string;
-  doubleBlack: string;
-  
+  difficulty: {
+      percent: {
+          green: string;
+          blue: string;
+          doubleBlue: string;
+          black: string;
+          doubleBlack: string;
+          }
+    
+      distance: {
+          green: string;
+          blue: string;
+          doubleBlue: string;
+          black: string;
+          doubleBlack: string;
+          }
+  }
   // Resort features
   terrainPark: string;
   backcountry: boolean | null;
@@ -45,6 +56,8 @@ export interface Resort {
   // Content and personalization
   description: string;
   matchPercentage?: number;
+  scrapeUrl: string;
+  url: string;
   
   // Weather information
   weather?: {

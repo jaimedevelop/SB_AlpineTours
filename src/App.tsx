@@ -6,12 +6,12 @@ import QuizSelector from './components/componentsQuiz/QuizSelector';
 import BeginnerQuiz from './components/componentsQuiz/BeginnerQuiz';
 import ExperiencedQuiz from './components/componentsQuiz/ExperiencedQuiz';
 import LoadingScreen from './components/componentsQuiz/LoadingScreen';
-import SkiMap from './components/SkiMap';
-import ResortList from './components/ResortList';
 import Dashboard from './components/componentsDashboard/Dashboard';
 import Login from './components/componentsAuthentication/Login';
 import CreateAccount from './components/componentsAuthentication/CreateAccount';
 import MapWithSlidingPanel from './components/MapWithSlidingPanel';
+import SkiResortPage from './components/SkiResortPage'; // Import the new SkiResortPage component
+import SkiMap2 from './components/componentsSkiMap/SkiMap2';
 
 function App() {
   const location = useLocation();
@@ -80,14 +80,14 @@ function App() {
               <MapWithSlidingPanel />
             </motion.div>
           } />
-          <Route path="/resorts" element={
+          <Route path="/results2" element={
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <ResortList />
+              <SkiMap2 />
             </motion.div>
           } />
           <Route path="/dashboard" element={

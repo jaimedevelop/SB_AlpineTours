@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogIn } from 'lucide-react';
+import { LogIn, BarChart2 } from 'lucide-react';
 
 export default function Welcome() {
   const navigate = useNavigate();
