@@ -33,7 +33,30 @@ interface FilterPanelProps {
   setSelectedCitySize: (size: string) => void;
 }
 
-const renderFilterPanel = () => {
+export default function FilterPanel({ 
+  activeFilter, 
+  setActiveFilter, 
+  setHoveredRegion,
+  priceRange,
+  setPriceRange,
+  selectedDifficulties,
+  setSelectedDifficulties,
+  selectedRegion,
+  setSelectedRegion,
+  selectedStates,
+  setSelectedStates,
+  location,
+  setLocation,
+  maxDistance,
+  setMaxDistance,
+  setSelectedCoordinates,
+  selectedAmenities,
+  setSelectedAmenities,
+  selectedCitySize,
+  setSelectedCitySize
+}: FilterPanelProps) {
+
+  const renderFilterPanel = () => {
     switch (activeFilter) {
       case 'price':
         return <PriceFilter priceRange={priceRange} setPriceRange={setPriceRange} />;
@@ -56,7 +79,7 @@ const renderFilterPanel = () => {
             setLocation={setLocation}
             maxDistance={maxDistance}
             setMaxDistance={setMaxDistance}
-            setSelectedCoordinates={setSelectedLocationCoords}
+            setSelectedCoordinates={setSelectedCoordinates}
           />
         );
       case 'amenities':
@@ -68,7 +91,22 @@ const renderFilterPanel = () => {
     }
   };
 
-return (
-  
+      return (
+  <div className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-lg transform transition-transform duration-300 ease-in-out z-20 ${activeFilter ? 'translate-y-0' : 'translate-y-full'}`} style={{ height: '50vh' }}>
+    <div className="flex justify-between items-center p-4 border-b">
+      <h2 className="text-xl font-semibold">
+        {activeFilter ? activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1) : ''} Filter
+      </h2>
+      <button onClick={() => {
+        setActiveFilter(null);
+        setHoveredRegion('');
+      }} className="p-2 hover:bg-gray-100 rounded-full">
+        <X className="w-6 h-6" />
+      </button>
+    </div>
+    <div className="overflow-y-auto" style={{ maxHeight: 'calc(50vh - 4rem)' }}>
+      {renderFilterPanel()}
+    </div>
+  </div>
 );
 }

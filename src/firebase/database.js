@@ -3,6 +3,7 @@
 import { ref, set, get, update, remove, query, orderByChild } from 'firebase/database';
 import { database } from './config';
 
+export { database } from './config';
 // User Profile Operations
 export const createUserProfile = async (userId, userData) => {
   try {
