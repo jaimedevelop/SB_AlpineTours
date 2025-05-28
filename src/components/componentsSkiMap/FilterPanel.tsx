@@ -1,11 +1,11 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import PriceFilter from '../filters/PriceFilter';
-import DifficultyFilter from '../filters/DifficultyFilter';
-import RegionFilter from '../filters/RegionFilter';
-import DistanceFilter from '../filters/DistanceFilter';
-import AmenitiesFilter from '../filters/AmenitiesFilter';
-import CityFilter from '../filters/CityFilter';
+import PriceFilter from './filters/PriceFilter';
+import DifficultyFilter from './filters/DifficultyFilter';
+import RegionFilter from './filters/RegionFilter';
+import DistanceFilter from './filters/DistanceFilter';
+import AmenitiesFilter from './filters/AmenitiesFilter';
+import CityFilter from './filters/CityFilter';
 
 type FilterType = 'price' | 'difficulty' | 'region' | 'distance' | 'amenities' | 'city' | null;
 

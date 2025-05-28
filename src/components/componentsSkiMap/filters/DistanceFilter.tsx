@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useMapboxGeocoding } from '../hooks/useMapboxGeocoding';
+import { useMapboxGeocoding } from '../../hooks/useMapboxGeocoding';
 
 interface DistanceFilterProps {
   location: string;
