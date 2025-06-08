@@ -1,5 +1,6 @@
 // src/firebase/auth.js
 // This file handles all authentication-related operations
+export { auth } from './config';
 import { 
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -28,7 +29,8 @@ import {
       throw error;
     }
   };
-  
+
+
   export const signIn = async (email, password) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -57,4 +59,6 @@ import {
   export const useAuth = (callback) => {
     return onAuthStateChanged(auth, callback);
   };
+
+
   

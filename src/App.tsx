@@ -10,13 +10,15 @@ import Dashboard from './components/componentsDashboard/Dashboard';
 import Login from './components/componentsAuthentication/Login';
 import CreateAccount from './components/componentsAuthentication/CreateAccount';
 import MapWithSlidingPanel from './components/MapWithSlidingPanel';
-import SkiResortPage from './components/SkiResortPage'; // Import the new SkiResortPage component
+import SkiResortPage from './components/SkiResortPage'; 
 import SkiMap2 from './components/componentsSkiMap/SkiMap2';
+import { AuthProvider } from './firebase/contexts/AuthContext';
 
 function App() {
   const location = useLocation();
 
   return (
+    <AuthProvider>
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -123,6 +125,7 @@ function App() {
         </Routes>
       </AnimatePresence>
     </div>
+      </AuthProvider>
   );
 }
 

@@ -74,52 +74,55 @@ export default function MapLayers({
 }: MapLayersProps) {
   
   const updateDistanceCircle = () => {
-    if (!mapRef.current || !selectedLocationCoords) return;
-    const map = mapRef.current;
+  if (!mapRef.current) return;
+  const map = mapRef.current;
 
-    // Remove existing layers and sources
-    if (map.getLayer('distance-fill')) map.removeLayer('distance-fill');
-    if (map.getLayer('distance-border')) map.removeLayer('distance-border');
-    if (map.getSource('distance-source')) map.removeSource('distance-source');
+  // Remove existing layers and sources
+  if (map.getLayer('distance-fill')) map.removeLayer('distance-fill');
+  if (map.getLayer('distance-border')) map.removeLayer('distance-border');
+  if (map.getSource('distance-source')) map.removeSource('distance-source');
 
-    // Create a circle using turf.js
-    const center = selectedLocationCoords;
-    const radius = maxDistance * 1.609; // Convert miles to kilometers
-    const options = {
-      steps: 64,
-      units: 'kilometers' as const
-    };
-    const circle = turf.circle(center, radius, options);
+  // If no coordinates are selected, just return after cleanup
+  if (!selectedLocationCoords) return;
 
-    // Add the circle source
-    map.addSource('distance-source', {
-      type: 'geojson',
-      data: circle
-    });
-
-    // Add the filled circle layer
-    map.addLayer({
-      id: 'distance-fill',
-      type: 'fill',
-      source: 'distance-source',
-      paint: {
-        'fill-color': '#4264fb',
-        'fill-opacity': 0.2
-      }
-    }, 'region-states-outline');
-
-    // Add the circle border layer
-    map.addLayer({
-      id: 'distance-border',
-      type: 'line',
-      source: 'distance-source',
-      paint: {
-        'line-color': '#4264fb',
-        'line-width': 2,
-        'line-opacity': 0.8
-      }
-    });
+  // Create a circle using turf.js
+  const center = selectedLocationCoords;
+  const radius = maxDistance * 1.609; // Convert miles to kilometers
+  const options = {
+    steps: 64,
+    units: 'kilometers' as const
   };
+  const circle = turf.circle(center, radius, options);
+
+  // Add the circle source
+  map.addSource('distance-source', {
+    type: 'geojson',
+    data: circle
+  });
+
+  // Add the filled circle layer
+  map.addLayer({
+    id: 'distance-fill',
+    type: 'fill',
+    source: 'distance-source',
+    paint: {
+      'fill-color': '#4264fb',
+      'fill-opacity': 0.2
+    }
+  }, 'region-states-outline');
+
+  // Add the circle border layer
+  map.addLayer({
+    id: 'distance-border',
+    type: 'line',
+    source: 'distance-source',
+    paint: {
+      'line-color': '#4264fb',
+      'line-width': 2,
+      'line-opacity': 0.8
+    }
+  });
+};
 
   // Call the parent's onMapLoad and then handle our layer setup
   useEffect(() => {

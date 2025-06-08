@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SkiMap from './SkiMap';
+import SkiMap2 from './componentsSkiMap/SkiMap2';
 import { SlidingPanel } from './componentsSlidingPanel/SlidingPanel';
 import { Resort } from '../types/types';
 
@@ -32,7 +32,7 @@ export default function MapWithSlidingPanel() {
     <div className="h-screen w-full relative overflow-hidden">
       {/* The map fills the entire container */}
       <div className="absolute inset-0">
-        <SkiMap 
+        <SkiMap2 
           onMapClick={handleMapClick}
           onResortSelect={handleResortSelect}
           selectedResort={selectedResort}
